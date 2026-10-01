@@ -161,6 +161,10 @@ def build_evaluation_artifact(
 ) -> dict[str, Any]:
     failures = [result for result in results if not result.passed]
     suggestions = analyzer.generate_improvement_suggestions(failures)
+    per_failure_suggestions = [
+        analyzer.generate_improvement_suggestions([failure])[0]
+        for failure in failures
+    ]
     return {
         "summary": summary,
         "results": [
@@ -184,7 +188,7 @@ def build_evaluation_artifact(
             "counts": analyzer.categorize_failures(failures),
             "suggestions": suggestions,
             "improvement_log": analyzer.generate_improvement_log(
-                failures, suggestions
+                failures, per_failure_suggestions
             ),
         },
     }
